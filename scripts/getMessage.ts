@@ -3,6 +3,8 @@ import hre from 'hardhat'
 import { encryptDataField, decryptNodeResponse } from '@swisstronik/utils'
 import { HardhatEthersProvider } from '@nomicfoundation/hardhat-ethers/internal/hardhat-ethers-provider'
 import { JsonRpcProvider } from 'ethers'
+import deployedAddress from '../utils/deployed-address'
+import { HttpNetworkConfig } from 'hardhat/types'
 
 const sendShieldedQuery = async (
   provider: HardhatEthersProvider | JsonRpcProvider,
@@ -10,8 +12,8 @@ const sendShieldedQuery = async (
   data: string
 ) => {
   // Get the RPC link from the network configuration
-  //@ts-ignore
-  const rpclink = hre.network.config.url
+  // Get the RPC link from the network configuration
+  const rpclink = (hre.network.config as HttpNetworkConfig).url
 
   // Encrypt the call data using the SwisstronikJS function
   const [encryptedData, usedEncryptedKey] = await encryptDataField(rpclink, data)
@@ -28,7 +30,7 @@ const sendShieldedQuery = async (
 
 async function main() {
   // Address of the deployed contract
-  const contractAddress = '0xf1f0C7Bf19ee4E196C0213cEE1002e9a5fadff62'
+  const contractAddress = deployedAddress
 
   // Get the signer (your account)
   const [signer] = await hre.ethers.getSigners()

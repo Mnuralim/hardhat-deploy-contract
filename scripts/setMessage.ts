@@ -1,6 +1,8 @@
 import hre from 'hardhat'
-import { encryptDataField, decryptNodeResponse } from '@swisstronik/utils'
+import { encryptDataField } from '@swisstronik/utils'
 import { HardhatEthersSigner } from '@nomicfoundation/hardhat-ethers/src/signers'
+import { HttpNetworkConfig } from 'hardhat/types'
+import deployedAddress from '../utils/deployed-address'
 
 const sendShieldedTransaction = async (
   signer: HardhatEthersSigner,
@@ -9,8 +11,7 @@ const sendShieldedTransaction = async (
   value: number
 ) => {
   // Get the RPC link from the network configuration
-  //@ts-ignore
-  const rpclink = hre.network.config.url
+  const rpclink = (hre.network.config as HttpNetworkConfig).url
 
   // Encrypt transaction data
   const [encryptedData] = await encryptDataField(rpclink, data)
@@ -26,7 +27,7 @@ const sendShieldedTransaction = async (
 
 async function main() {
   // Address of the deployed contract
-  const contractAddress = '0xf1f0C7Bf19ee4E196C0213cEE1002e9a5fadff62'
+  const contractAddress = deployedAddress
 
   // Get the signer (your account)
   const [signer] = await hre.ethers.getSigners()
